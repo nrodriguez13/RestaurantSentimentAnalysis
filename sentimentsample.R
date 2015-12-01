@@ -1,6 +1,4 @@
 
-#setwd("./Documents/STATS133")
-
 #Necessary libraries
 #Found @:https://sites.google.com/site/miningtwitter/questions/sentiment/sentiment
 library(base64enc)
