@@ -26,10 +26,10 @@ install_url("http://cran.r-project.org/src/contrib/Archive/sentiment/sentiment_0
 #Next how to access the key, secret, token and acess secret. 
 #Need to tell users that this information is sensitive and should be kept private. 
 #This block essentially allows R to search for Tweets
-setup_twitter_oauth(consumer_key = "J6rGag8aY4s5AxzS24AtK2QOK", 
-                    consumer_secret = "oCtT6Pt5jaBxrImdq7g2ug835xiX7EIWoVQ28tW3V4WFGhbMlU",
-                    access_token = "177002768-6HMgmFdFeGQmFsWoVJEV4SPpQSDjCEaFb26cLxVR",
-                    access_secret = "qngwtwAA5x0LHQkwkeZBLGIlOzxsW8XI1jiPhvDByuG9P")
+setup_twitter_oauth(consumer_key = "*****", 
+                    consumer_secret = "*****",
+                    access_token = "*****",
+                    access_secret = "*****")
 
 #Select 1 when asked to use a local file to cache OAuth 
 
