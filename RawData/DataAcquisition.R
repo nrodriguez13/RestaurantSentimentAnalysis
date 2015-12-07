@@ -68,9 +68,20 @@ setup_twitter_oauth(consumer_key = "*****",
 
 ####:::::::::::::::::::::::::::Getting Tweets::::::::::::::::::::::::::::::::####
 
-#In order to search for 
+#In order to search for tweets, we will use twitteR's function, searchTwitter()
+#Here is a given example where I provide the searchString argument a certain 
+#pattern of interest, in this case the google handle on twitter. n is the
+#argument that represents the max number of tweets you would like returned.
+#Finally, lang specifies which language you would prefer the tweets. You can 
+#specify language with an ISO 639-1 code. Here is a list of codes:
+#https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 
-tweetsample <- searchTwitter(searchString = "@google since:2015-12-06", 
-                             n = 50, lang = "en")
+exampleOne <- searchTwitter(searchString = "@google", n = 50, lang = "en")
+
+#You can also make the searchString argument much more complex. For instance,
+#one can provide a since or until date, search for hashtags, tweets with emotions.
+#For more information in building Twitter API queries, take a look here 
+# ---> https://dev.twitter.com/rest/public/search
+
 
 
