@@ -44,3 +44,8 @@ files that we later analyze and visualize.
 
 The *Scripts* directory holds the R scripts that cleans the data. Feel free to
 walk through the script, command statements are for the most part narrated.
+
+###Some Useful Links
+
+I found these resources very helpful.
+  - [Twitter Search API](https://dev.twitter.com/rest/public/search)
