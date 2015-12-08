@@ -6,11 +6,11 @@
 
 
 
-#####::::::::::::::::::::::::::Required Packages::::::::::::::::::::::::::::::####
+#####::::::::::::::::::::::::::Required Packages::::::::::::::::::::::::::::::#####
 
 #First step is to install and load the necessary packages.
 #Depending on your machine's setup, you may not need to install all of these.
-#Don't forget to install.packages() before the loading them with the following 
+#Don't forget to install.packages() before loading them with the following 
 #command statements if you haven't already.
 
 require(base64enc)
@@ -66,7 +66,7 @@ setup_twitter_oauth(consumer_key = "*****",
 #You should respond with 1, meaning Yes. If all goes well, you are now ready to
 #interact with Twitter 
 
-####:::::::::::::::::::::::::::Getting Tweets::::::::::::::::::::::::::::::::####
+#####:::::::::::::::::::::::::::Getting Tweets::::::::::::::::::::::::::::::::#####
 
 #In order to search for tweets, we will use twitteR's function, searchTwitter()
 #Here is a given example where I provide the searchString argument a certain 
@@ -77,7 +77,10 @@ setup_twitter_oauth(consumer_key = "*****",
 #https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 
 exampleOne <- searchTwitter(searchString = "@google", n = 50, lang = "en")
+exampleTwo <- searchTwitter(searchString = "@McDonalds since:2015-12-01", 
+                            n = 50, lang = "en")
 
+lapply(exampleTwo, write, "./RawData/McDTweets.txt", append = TRUE, ncolumns = 1000)
 #You can also make the searchString argument much more complex. For instance,
 #one can provide a since or until date, search for hashtags, tweets with emotions.
 #For more information in building Twitter API queries, take a look here 
