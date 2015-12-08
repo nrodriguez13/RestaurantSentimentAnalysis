@@ -26,9 +26,10 @@ authenticating a session with Twitter in R and submitting queries for tweets.
 
 ##The Setup
 
-You should find that there are 5 directories
-    * RawData
-    * CleanData
-    * Scripts
-    * Plots
-    * Functions 
+You should find that there are 5 directories:
+
+    - **RawData**
+    - **CleanData**
+    - **Scripts**
+    - **Plots**
+    - **Functions**
