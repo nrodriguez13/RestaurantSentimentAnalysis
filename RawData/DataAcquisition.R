@@ -77,14 +77,21 @@ setup_twitter_oauth(consumer_key = "*****",
 #https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 
 exampleOne <- searchTwitter(searchString = "@google", n = 50, lang = "en")
-exampleTwo <- searchTwitter(searchString = "@McDonalds since:2015-12-01", 
-                            n = 50, lang = "en")
 
-lapply(exampleTwo, write, "./RawData/McDTweets.txt", append = TRUE, ncolumns = 1000)
+#Here is a query that we conducted.
+McDsample <- searchTwitter(searchString = "to:McDonalds" , n = 200, lang = "en")
+
 #You can also make the searchString argument much more complex. For instance,
 #one can provide a since or until date, search for hashtags, tweets with emotions.
 #For more information in building Twitter API queries, take a look here 
 # ---> https://dev.twitter.com/rest/public/search
+
+#Next, we can convert this list of tweets to a data frame with the given function,
+#twListToDF(), from the twitteR package. Again, I'm converting the queries that 
+#we essentially used for our project and provided them the following file names.
+
+McDDF <- twListToDF(McDsample)
+write.table(McDDF, file = "./RawData/McDTweets.txt")
 
 
 

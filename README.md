@@ -1,6 +1,6 @@
 # Restaurant Sentiment Analysis
 
-###Project Description
+###Project Description::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 This project attempts to gain a glimpse of certain region's sentiments of
 some fast food restaurants. Sentiments are measured using methods from
@@ -14,7 +14,7 @@ the **DataAcquistion** file. The file will assist with set up. This includes:
 loading necessary packages, signing up for a Twitter Dev's account,
 authenticating a session with Twitter in R and submitting queries for tweets.
 
-###The Team
+###The Team::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 **Nicolas Rodriguez**: A Cognitive Science major interested in UX research.
 
@@ -24,7 +24,7 @@ authenticating a session with Twitter in R and submitting queries for tweets.
 
 **Yea (Anna) Jung**:
 
-###The Setup
+###The Setup::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 You should find that there are 5 directories:
 
@@ -40,4 +40,5 @@ also house the data we compiled for our specific project (in case you want
 to take a look).
 
 The *CleanData* directory, like the clever title implies, holds the clean data
-files that we later analyze and visualize.
+files that we later analyze and visualize. The visualizations that we created
+basic exploratory data analysis plots, word clouds and a geospatial mapping.
