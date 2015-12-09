@@ -49,3 +49,4 @@ walk through the script, command statements are for the most part narrated.
 
 I found these resources very helpful.
   - [Twitter Search API](https://dev.twitter.com/rest/public/search)
+  - [Regular Expressions Cheat Sheet](http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/)
