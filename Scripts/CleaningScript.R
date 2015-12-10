@@ -1,6 +1,6 @@
 
 ####::::::::::::::::::::::::::::Cleaning Script:::::::::::::::::::::::::::::::####
-#### This script will go through cleaning process of text data from tweets.
+#### This script will go through cleaning process of text data from tweets. 
 
 #First we load up the text file into a data frame.
 McDDF <- read.table(file = "./RawData/RawMcDTweets.txt", 

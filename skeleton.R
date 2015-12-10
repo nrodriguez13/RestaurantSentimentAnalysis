@@ -1,3 +1,4 @@
+
 ##The purpose of this file is to create the directories that will help 
 ##organize the files of the projects.
 
