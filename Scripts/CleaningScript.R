@@ -3,7 +3,8 @@
 #### This script will go through cleaning process of text data from tweets.
 
 #First we load up the text file into a data frame.
-McDDF <- read.table(file = "./RawData/RawMcDTweets.txt", header = FALSE, fill = TRUE)
+McDDF <- read.table(file = "./RawData/RawMcDTweets.txt", 
+                    header = FALSE, fill = TRUE)
 
 #Next, we will grab the column that holds the tweets' text
 McDtweets <- McDDF$V2
@@ -43,5 +44,5 @@ McDtweets <- sapply(McDtweets, tolower)
 names(McDtweets) <- NULL
 McDtweets <- unique(McDtweets)
 
-#Export data to a file
+#Export data to a file in the CleanData directory.
 write(McDtweets, file = "./CleanData/CleanMcDTweets.txt")
