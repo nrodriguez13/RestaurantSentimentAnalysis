@@ -1,3 +1,4 @@
+
 ####::::::::::::::::::::::Exploratory Data Analysis::::::::::::::::::::::::::####
 #This scripts attempts to gain a glimpse of the data's behavior. We will perform
 #sentiment analysis, take at look at word frequencies and some other summary
@@ -17,8 +18,10 @@ install_url("http://cran.r-project.org/src/contrib/Archive/sentiment/sentiment_0
 
 #Required packages that need to be installed and loaded
 require(sentiment)
+require(NLP)
 require(openNLP)
 require(twitteR)
+require(stringr)
 
 #First let's load a clean data file. I'm going to load the clean McDonald's
 #tweet text.
@@ -70,11 +73,54 @@ head(McDPolar)
 McDPolbestfit <- McDPolar[ , 4]
 
 #Next, let's compile the output into another data frame and view it.
-McDSentiments <- data.frame (text = McDtext,
-                             Emotion = McDEmobestfit,
-                             Polarity = McDPolbestfit,
-                             stringsAsFactors = FALSE)
+McDSentiments <- data.frame(text = McDtext,
+                            Emotion = McDEmobestfit,
+                            Polarity = McDPolbestfit,
+                            stringsAsFactors = FALSE)
 
 View(McDSentiments)
 
+#tagPOS() is not found in the NLP packages, so this function is cited at
+#http://stackoverflow.com/questions/28764056/could-not-find-function-tagpos
+#The purpose of this function is to tag text input with parts of speech.
+#We want to do this so we can look at the frequencies of certain adjectives
+#and other types of words. 
+tagPOS <-  function(x, ...) {
+  s <- as.String(x)
+  word_token_annotator <- Maxent_Word_Token_Annotator()
+  a2 <- Annotation(1L, "sentence", 1L, nchar(s))
+  a2 <- annotate(s, word_token_annotator, a2)
+  a3 <- annotate(s, Maxent_POS_Tag_Annotator(), a2)
+  a3w <- a3[a3$type == "word"]
+  POStags <- unlist(lapply(a3w$features, `[[`, "POS"))
+  POStagged <- paste(sprintf("%s/%s", s[a3w], POStags), collapse = " ")
+  list(POStagged = POStagged, POStags = POStags)
+}
+
+
+unknownTweets <- McDSentiments$text[McDSentiments$Emotion == "Unknown"]
+lexicon <- character()
+POSvector <- character()
+for (i in 1:length(unknownTweets)) {
+  words <- str_split(unknownTweets[i], pattern = " ")
+  POSvector <- append(POSvector, tagPOS(unknownTweets[i]))
+  for (w in words) {
+    lexicon <- append(lexicon, w)
+  }
+}
+
+
+unknownTagsfirst30 <- sapply(unknownTweets[1:30], FUN = tagPOS)
+unknownTagnext30 <- sapply(unknownTweets[31:60], FUN = tagPOS)
+unknownTag61to90 <- sapply(unknownTweets[61:90], FUN = tagPOS)
+unknownTag91to110 <- sapply(unknownTweets[91:110], FUN = tagPOS)
+unknownTag111to120 <- sapply(unknownTweets[111:120], FUN = tagPOS)
+unknownTag121to125 <- sapply(unknownTweets[121:125], FUN = tagPOS)
+unknownTag126to135 <-  sapply(unknownTweets[126:135], FUN = tagPOS)
+
+
+
+x <- barplot(table(lexicon), xaxt = "n")
+labs <- names(table(lexicon))
+text(cex = 1, x = x -.25, y = -1.25, labs, xpd = TRUE, srt = 90, pos = 2)
 
