@@ -8,9 +8,9 @@
 #packages, you may need to perform some extra steps in order to install and load
 #them. I will to address these steps now.
 
-#The "sentiment" package is no longer possesses a CRAN respository, so you will
-#need to download the source code. "sentiment" also requires the loading of 
-#"Rstem". 
+#The "sentiment" package no longer possesses a CRAN respository, so you will
+#need to download the source code. "sentiment" also requires the "Rstem" 
+#to be loaded.
 
 install_url("http://cran.r-project.org/src/contrib/Archive/Rstem/Rstem_0.4-1.tar.gz")
 install_url("http://cran.r-project.org/src/contrib/Archive/sentiment/sentiment_0.2.tar.gz")
@@ -99,28 +99,39 @@ tagPOS <-  function(x, ...) {
 
 
 unknownTweets <- McDSentiments$text[McDSentiments$Emotion == "Unknown"]
-lexicon <- character()
-POSvector <- character()
-for (i in 1:length(unknownTweets)) {
-  words <- str_split(unknownTweets[i], pattern = " ")
-  POSvector <- append(POSvector, tagPOS(unknownTweets[i]))
-  for (w in words) {
-    lexicon <- append(lexicon, w)
-  }
+# lexicon <- character()
+# for (i in 1:length(unknownTweets)) {
+#   words <- str_split(unknownTweets[i], pattern = " ")
+#   for (w in words) {
+#     lexicon <- append(lexicon, w)
+#   }
+# }
+
+#WARNING: This tagPOS() commands are little sensitive and are prone to a
+#out of memory error. If you plan to tag many strings, you may need to break
+#the vector into smaller ones. Another thing you could do is to relieve the 
+#R environment by removing some values or unneeded data.
+unknownTags1to30 <- sapply(unknownTweets[1:30], FUN = tagPOS)
+unknownTags31to60 <- sapply(unknownTweets[31:60], FUN = tagPOS)
+unknownTags61to90 <- sapply(unknownTweets[61:90], FUN = tagPOS)
+unknownTags91to110 <- sapply(unknownTweets[91:110], FUN = tagPOS)
+unknownTags111to120 <- sapply(unknownTweets[111:120], FUN = tagPOS)
+unknownTags121to135 <- sapply(unknownTweets[121:135], FUN = tagPOS)
+
+#This function will parse out the POS that are tagged to each word of a 
+#character vector. It will then plot a frequency table of the POS. 
+#The input for this function is actually the data frame that one would 
+#receive after using tagPOS(). 
+posFreqPlot <- function(x) {
+  taggedList <- strsplit(as.character(x[1,]), split = " ")
+  taggedVec <- unlist(taggedList)
+  splitVec <- unlist(strsplit(example[1:length(taggedVec)], split = "/"))
+  allTags <- splitVec[seq(from = 2, to = length(splitVec), by = 2)]
+  tagFreqs <- table(allTags)
+  barplot(tagFreqs)
 }
 
+#Now we can 
+createTagDict(unknownTagsfirst30)
 
-unknownTagsfirst30 <- sapply(unknownTweets[1:30], FUN = tagPOS)
-unknownTagnext30 <- sapply(unknownTweets[31:60], FUN = tagPOS)
-unknownTag61to90 <- sapply(unknownTweets[61:90], FUN = tagPOS)
-unknownTag91to110 <- sapply(unknownTweets[91:110], FUN = tagPOS)
-unknownTag111to120 <- sapply(unknownTweets[111:120], FUN = tagPOS)
-unknownTag121to125 <- sapply(unknownTweets[121:125], FUN = tagPOS)
-unknownTag126to135 <-  sapply(unknownTweets[126:135], FUN = tagPOS)
-
-
-
-x <- barplot(table(lexicon), xaxt = "n")
-labs <- names(table(lexicon))
-text(cex = 1, x = x -.25, y = -1.25, labs, xpd = TRUE, srt = 90, pos = 2)
 
