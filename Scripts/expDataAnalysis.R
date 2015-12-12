@@ -80,32 +80,13 @@ McDSentiments <- data.frame(text = McDtext,
 
 View(McDSentiments)
 
-#tagPOS() is not found in the NLP packages, so this function is cited at
-#http://stackoverflow.com/questions/28764056/could-not-find-function-tagpos
-#The purpose of this function is to tag text input with parts of speech.
-#We want to do this so we can look at the frequencies of certain adjectives
-#and other types of words. 
-tagPOS <-  function(x, ...) {
-  s <- as.String(x)
-  word_token_annotator <- Maxent_Word_Token_Annotator()
-  a2 <- Annotation(1L, "sentence", 1L, nchar(s))
-  a2 <- annotate(s, word_token_annotator, a2)
-  a3 <- annotate(s, Maxent_POS_Tag_Annotator(), a2)
-  a3w <- a3[a3$type == "word"]
-  POStags <- unlist(lapply(a3w$features, `[[`, "POS"))
-  POStagged <- paste(sprintf("%s/%s", s[a3w], POStags), collapse = " ")
-  list(POStagged = POStagged, POStags = POStags)
-}
-
-
 unknownTweets <- McDSentiments$text[McDSentiments$Emotion == "Unknown"]
-# lexicon <- character()
-# for (i in 1:length(unknownTweets)) {
-#   words <- str_split(unknownTweets[i], pattern = " ")
-#   for (w in words) {
-#     lexicon <- append(lexicon, w)
-#   }
-# }
+joyfulTweets <- McDSentiments$text[McDSentiments$Emotion == "joy"]
+angryTweets <- McDSentiments$text[McDSentiments$Emotion == "anger"]
+fearTweets <- McDSentiments$text[McDSentiments$Emotion == "fear"]
+sadTweets <- McDSentiments$text[McDSentiments$Emotion == "sadness"]
+disgustTweets <- McDSentiments$text[McDSentiments$Emotion == "disgust"]
+surprisedTweets <- McDSentiments$text[McDSentiments$Emotion == "surprise"]
 
 #WARNING: This tagPOS() commands are little sensitive and are prone to a
 #out of memory error. If you plan to tag many strings, you may need to break
@@ -118,20 +99,10 @@ unknownTags91to110 <- sapply(unknownTweets[91:110], FUN = tagPOS)
 unknownTags111to120 <- sapply(unknownTweets[111:120], FUN = tagPOS)
 unknownTags121to135 <- sapply(unknownTweets[121:135], FUN = tagPOS)
 
-#This function will parse out the POS that are tagged to each word of a 
-#character vector. It will then plot a frequency table of the POS. 
-#The input for this function is actually the data frame that one would 
-#receive after using tagPOS(). 
-posFreqPlot <- function(x) {
-  taggedList <- strsplit(as.character(x[1,]), split = " ")
-  taggedVec <- unlist(taggedList)
-  splitVec <- unlist(strsplit(example[1:length(taggedVec)], split = "/"))
-  allTags <- splitVec[seq(from = 2, to = length(splitVec), by = 2)]
-  tagFreqs <- table(allTags)
-  barplot(tagFreqs)
-}
-
-#Now we can 
+#Now we can take a look at the frequencies of POS in tweets that are classified
+#with an emotion of "Unknown"
 createTagDict(unknownTagsfirst30)
+
+
 
 
