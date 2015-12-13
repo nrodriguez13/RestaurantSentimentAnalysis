@@ -10,18 +10,18 @@
 
 #The "sentiment" package no longer possesses a CRAN respository, so you will
 #need to download the source code. "sentiment" also requires the "Rstem" 
-#to be loaded.
+#to be loaded. Please run the following two lines that are commented out.
+#Keep in mind, you only need to run these two install_URL commands once.
 
-install_url("http://cran.r-project.org/src/contrib/Archive/Rstem/Rstem_0.4-1.tar.gz")
-install_url("http://cran.r-project.org/src/contrib/Archive/sentiment/sentiment_0.2.tar.gz")
+#install_url("http://cran.r-project.org/src/contrib/Archive/Rstem/Rstem_0.4-1.tar.gz")
+#install_url("http://cran.r-project.org/src/contrib/Archive/sentiment/sentiment_0.2.tar.gz")
 
 
 #Required packages that need to be installed and loaded
 require(sentiment)
-require(NLP)
 require(openNLP)
-require(twitteR)
 require(stringr)
+require(ggplot2)
 
 #First let's load a clean data file. I'm going to load the clean McDonald's
 #tweet text.
@@ -49,6 +49,8 @@ McDEmobestfit[is.na(McDEmobestfit)] <- "Unknown"
 #Now, let's take a look at the frequencies of the sentiments.
 McDemofreq <- table(McDEmobestfit)
 barplot(McDemofreq)
+dev.off()
+dev.new()
 
 #We can also convert the columns with likelihoods into numeric
 McDNumdf <- data.frame(Anger = as.numeric(McDemotions[, 1]),
@@ -80,8 +82,30 @@ McDSentiments <- data.frame(text = McDtext,
 
 View(McDSentiments)
 
-unknownTweets <- McDSentiments$text[McDSentiments$Emotion == "Unknown"]
-joyfulTweets <- McDSentiments$text[McDSentiments$Emotion == "joy"]
+#Let's take take a look the McDSentiments even closer
+length(McDSentiments$Emotion[McDSentiments$Emotion == "Unknown"])
+
+#How many entries are classified as joyful?
+length(McDSentiments$Emotion[McDSentiments$Emotion == "joy"])
+
+#How many entries are classified as angry?
+length(McDSentiments$Emotion[McDSentiments$Emotion == "anger"])
+
+#How many entries are classified as disgust?
+length(McDSentiments$Emotion[McDSentiments$Emotion == "disgust"])
+
+#How many entries are classfied as sad?
+length(McDSentiments$Emotion[McDSentiments$Emotion == "sadness"])
+
+#How many entries are classified with a positive polarity?
+length(McDSentiments$Polarity[McDSentiments$Polarity == "positive"])
+
+#How many entries are classified with a negative polarity?
+length(McDSentiments$Polarity[McDSentiments$Polarity == "negative"])
+
+#How many entries are classified with a neutral polarity?
+length(McDSentiments$Polarity[McDSentiments$Polarity == "neutral"])
+
 angryTweets <- McDSentiments$text[McDSentiments$Emotion == "anger"]
 fearTweets <- McDSentiments$text[McDSentiments$Emotion == "fear"]
 sadTweets <- McDSentiments$text[McDSentiments$Emotion == "sadness"]
@@ -92,6 +116,7 @@ surprisedTweets <- McDSentiments$text[McDSentiments$Emotion == "surprise"]
 #out of memory error. If you plan to tag many strings, you may need to break
 #the vector into smaller ones. Another thing you could do is to relieve the 
 #R environment by removing some values or unneeded data.
+unknownTweets <- McDSentiments$text[McDSentiments$Emotion == "Unknown"]
 unknownTags1to30 <- sapply(unknownTweets[1:30], FUN = tagPOS)
 unknownTags31to60 <- sapply(unknownTweets[31:60], FUN = tagPOS)
 unknownTags61to90 <- sapply(unknownTweets[61:90], FUN = tagPOS)
@@ -99,10 +124,41 @@ unknownTags91to110 <- sapply(unknownTweets[91:110], FUN = tagPOS)
 unknownTags111to120 <- sapply(unknownTweets[111:120], FUN = tagPOS)
 unknownTags121to135 <- sapply(unknownTweets[121:135], FUN = tagPOS)
 
+
+#Now we will recombine all the unknown tweet's POS tags into one data frame.
+unknownTagsDF <- cbind(unknownTags1to30,
+                       unknownTags31to60,
+                       unknownTags61to90,
+                       unknownTags91to110,
+                       unknownTags111to120,
+                       unknownTags121to135)
+
 #Now we can take a look at the frequencies of POS in tweets that are classified
-#with an emotion of "Unknown"
-createTagDict(unknownTagsfirst30)
+#with an emotion of "Unknown". We will also save the plot to a PDF and PNG file.
+pdf(file = "./Plots/unknownPOSFreq.pdf")
+posFreqPlot(unknownTagsDF)
+dev.off()
 
+png(file = "./Plots/unknownPOSFreq.png")
+posFreqPlot(unknownTagsDF)
+dev.off()
 
+#We can visualize the similar plots but on the other emotions (ie. joy). However
+#we will need to rerun the tagPOS() on the corresponding set of tweets. 
+joyfulTweets <- McDSentiments$text[McDSentiments$Emotion == "joy"]
+joyfulTags1to20 <- sapply(joyfulTweets[1:20], tagPOS)
+joyfulTags21to41 <- sapply(joyfulTweets[21:41], tagPOS)
+joyfulTagsDF <- cbind(joyfulTags1to20, joyfulTags21to41)
 
+pdf(file = "./Plots/joyfulPOSFreq.pdf")
+posFreqPlot(joyfulTagsDF)
+dev.off()
+
+png(file = "./Plots/joyfulPOSFreq.png")
+posFreqPlot(joyfulTagsDF)
+dev.off()
+
+#As one can tell, the dominant POS that is found seem to be nouns. You can take
+#a look to see what these POS codes signify by looking at this link:
+#http://cs.nyu.edu/grishman/jet/guide/PennPOS.html
 

@@ -9,8 +9,6 @@ McDDF <- read.table(file = "./RawData/RawMcDTweets.txt",
 #Next, we will grab the column that holds the tweets' text
 McDtweets <- McDDF$V2
 
-#McDtweets <- sapply(McDtweets, function(x) x$getText())
-
 #Get rid of annoying retweet instances
 McDtweets <- gsub("(RT|via)((?:\\b\\W*@\\w+)+)", "", McDtweets)
 
@@ -46,3 +44,4 @@ McDtweets <- unique(McDtweets)
 
 #Export data to a file in the CleanData directory.
 write(McDtweets, file = "./CleanData/CleanMcDTweets.txt")
+

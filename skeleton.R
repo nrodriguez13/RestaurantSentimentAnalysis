@@ -11,3 +11,5 @@ dir.create(path = "./Scripts")
 dir.create(path = "./Functions")
 
 dir.create(path = "./Plots")
+
+dir.create(path = "./Report")

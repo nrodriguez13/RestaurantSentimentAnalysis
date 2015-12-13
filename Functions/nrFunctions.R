@@ -29,7 +29,7 @@ tagPOS <-  function(x, ...) {
 posFreqPlot <- function(x) {
   taggedList <- strsplit(as.character(x[1,]), split = " ")
   taggedVec <- unlist(taggedList)
-  splitVec <- unlist(strsplit(example[1:length(taggedVec)], split = "/"))
+  splitVec <- unlist(strsplit(taggedVec[1:length(taggedVec)], split = "/"))
   allTags <- splitVec[seq(from = 2, to = length(splitVec), by = 2)]
   tagFreqs <- table(allTags)
   barplot(tagFreqs)
