@@ -292,9 +292,6 @@ reflected in our data. Here are some other plots that show this behavior.
 ![In-n-Out emotion freqs](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/innoutPolarity.png)
 
 
-An explanation for this conclusion could be that people
-generally tweet not very sentimental postings about restaurants. Another 
-possibility is to blame the Bayes classifier. It will take much more research
-to study the latter possibility.
+An explanation for this conclusion could be that people generally tweet not very sentimental postings about restaurants. Another possibility is to blame the Bayes classifier. It will take much more research to study the latter possibility. Next major steps would be to work more with the quantitative data, so perhaps plot change of log likelihoods across restaurants.
 
 
