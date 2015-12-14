@@ -32,7 +32,9 @@ posFreqPlot <- function(x) {
   splitVec <- unlist(strsplit(taggedVec[1:length(taggedVec)], split = "/"))
   allTags <- splitVec[seq(from = 2, to = length(splitVec), by = 2)]
   tagFreqs <- table(allTags)
-  barplot(tagFreqs)
+  plotTitle <- gsub("TagsDF", "", deparse(substitute(x)))
+  barplot(tagFreqs, main = paste("Frequency of POS in ", plotTitle, " Tweets"),
+          xlab = "Parts of Speech", ylab = "Frequency")
 }
 
 

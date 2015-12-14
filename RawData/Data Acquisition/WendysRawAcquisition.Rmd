@@ -1,0 +1,23 @@
+---
+title: "wendys raw"
+---
+
+
+
+```{r}
+#install.packages("twitteR")
+library(twitteR)
+#install.packages("tm")
+library(tm)
+
+#consumer_key <- ""
+#consumer_secret <- ""
+#access_token <- ""
+#access_secret <- ""
+
+setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+
+wendys_tweets <-  searchTwitter("to:Wendys", n=1000, lang="en")
+wendys_DF <- twListToDF(wendys_tweets)
+write.table(wendys_DF, file = "./RawData/WendysTweets.txt")
+```

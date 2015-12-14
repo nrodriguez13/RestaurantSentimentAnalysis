@@ -1,0 +1,167 @@
+---
+title: "Wendys Exploratory"
+---
+
+What devices are these tweets coming from? We can use the "sourcestatus" column to see the original device used to make each tweet. 
+
+```{r}
+wendys_DF <- read.table(file = "./RawData/WendysTweets.txt", 
+                    header = FALSE, fill = TRUE)
+
+sort(table(wendys_DF$V12), decreasing = TRUE)
+
+iphone <- length(grep("iphone",wendys_DF$V12, ignore.case = TRUE))
+android <- length(grep("android",wendys_DF$V12, ignore.case = TRUE))
+webtwit <- length(grep("twitter web",wendys_DF$V12, ignore.case = TRUE))
+ipad <- length(grep("ipad",wendys_DF$V12, ignore.case = TRUE))
+```
+
+Only 3 sources take up the vast majority of tweet origination, with iPhone possessing the most tweets by a landslide. Android is in a distant second. Mobile devices clearly originate the vast majority of tweets, with the Twitter Web Client in a far 3rd. The iPad is the only other source with more than 10 devices out of 1000 original tweets.
+
+```{r}
+barplot(c(iphone,
+       android,
+       webtwit,
+       ipad,
+       length(wendys_DF$V12) - 1 - iphone - android - webtwit - ipad), 
+       names.arg =  c("iPhone",
+                      "Android",
+                      "Web Client",
+                      "iPad",
+                      "Other"),
+       xlab = "Tweet Original Source", ylab = "Frequency", 
+       main = "Frequencies of Different Tweet Sources")
+```
+
+require(sentiment)
+require(openNLP)
+require(stringr)
+require(ggplot2)
+
+#First let's load a clean data file. I'm going to load the clean Wendysonald's
+#tweet text.
+WendysText <- readLines("./CleanData/CleanWendysTweets.txt")
+
+#Let us now try to perform some basic sentiment functions on the text. The
+#classify_emotion() function resides in the "sentiment" package and takes in 
+#a set of text and implements a naive Bayesian classifier. 
+
+WendysEmotions <- classify_emotion(WendysText, algorithm = "bayes", prior = 1)
+
+#Wendysemotions is now a data frame of log-likelihoods for each text instance
+#The two hypotheses would be the null and the given sentiment. We would 
+#want to maximize the likeliood, so the higher the value represents a better
+#likelihood. If take a look, we can see what these sentiments are.
+head(WendysEmotions)
+
+#As one can tell, there are missing values in the BEST_FIT column, so we should
+#remove these.
+
+#We first grab the BEST_FIT column, however.
+WendysEmobestfit <- WendysEmotions[ , 7]
+WendysEmobestfit[is.na(WendysEmobestfit)] <- "Unknown" 
+
+#Now, let's take a look at the frequencies of the sentiments.
+WendysEmofreq <- table(WendysEmobestfit)
+barplot(WendysEmofreq)
+dev.off()
+dev.new()
+
+#We can also convert the columns with likelihoods into numeric
+WendysNumdf <- data.frame(Anger = as.numeric(Wendysemotions[, 1]),
+                       Disgust = as.numeric(Wendysemotions[ , 2]),
+                       Fear = as.numeric(Wendysemotions[ , 3]),
+                       Joy = as.numeric(Wendysemotions[ , 4]),
+                       Sadness = as.numeric(Wendysemotions[ , 5]),
+                       Surprise = as.numeric(Wendysemotions[ , 6]))
+
+summary(WendysNumdf)
+
+#We can take advantage of "sentiment" further by using the classify_polarity()
+#function that classifies a given text as "negative", "positive" or "neutral".
+#The output is another data frame of log-likelihoods.
+
+WendysPolar <- classify_polarity(WendysText, algorithm = "bayes")
+
+#Again, we'll take a quick look
+head(WendysPolar)
+
+#We will now grab the BEST_FIT column once again
+WendysPolbestfit <- WendysPolar[ , 4]
+
+#Next, let's compile the output into another data frame and view it.
+WendysSentiments <- data.frame(text = WendysText,
+                            Emotion = WendysEmobestfit,
+                            Polarity = WendysPolbestfit,
+                            stringsAsFactors = FALSE)
+
+View(WendysSentiments)
+
+#Let's take take a look the WendysSentiments even closer
+length(WendysSentiments$Emotion[WendysSentiments$Emotion == "Unknown"])
+
+#How many entries are classified as joyful?
+length(WendysSentiments$Emotion[WendysSentiments$Emotion == "joy"])
+
+#How many entries are classified as angry?
+length(WendysSentiments$Emotion[WendysSentiments$Emotion == "anger"])
+
+#How many entries are classified as disgust?
+length(WendysSentiments$Emotion[WendysSentiments$Emotion == "disgust"])
+
+#How many entries are classfied as sad?
+length(WendysSentiments$Emotion[WendysSentiments$Emotion == "sadness"])
+
+#How many entries are classified with a positive polarity?
+length(WendysSentiments$Polarity[WendysSentiments$Polarity == "positive"])
+
+#How many entries are classified with a negative polarity?
+length(WendysSentiments$Polarity[WendysSentiments$Polarity == "negative"])
+
+#How many entries are classified with a neutral polarity?
+length(WendysSentiments$Polarity[WendysSentiments$Polarity == "neutral"])
+
+angryTweets <- WendysSentiments$text[WendysSentiments$Emotion == "anger"]
+fearTweets <- WendysSentiments$text[WendysSentiments$Emotion == "fear"]
+sadTweets <- WendysSentiments$text[WendysSentiments$Emotion == "sadness"]
+disgustTweets <- WendysSentiments$text[WendysSentiments$Emotion == "disgust"]
+surprisedTweets <- WendysSentiments$text[WendysSentiments$Emotion == "surprise"]
+
+#WARNING: This tagPOS() commands are little sensitive and are prone to a
+#out of memory error. If you plan to tag many strings, you may need to break
+#the vector into smaller ones. Another thing you could do is to relieve the 
+#R environment by removing some values or unneeded data.
+#unknownTweets <- WendysSentiments$text[WendysSentiments$Emotion == "Unknown"]
+#unknownTags1to30 <- sapply(unknownTweets[1:30], FUN = tagPOS)
+#...
+
+
+#Now we will recombine all the unknown tweet's POS tags into one data frame.
+#unknownTagsDF <- cbind(unknownTags1to30 ... 
+
+#Now we can take a look at the frequencies of POS in tweets that are classified
+#with an emotion of "Unknown". We will also save the plot to a PDF and PNG file.
+#pdf(file = "./Plots/unknownPOSFreq.pdf")
+#posFreqPlot(unknownTagsDF)
+#dev.off()
+
+#png(file = "./Plots/unknownPOSFreq.png")
+#posFreqPlot(unknownTagsDF)
+#dev.off()
+
+#We can visualize the similar plots but on the other emotions (ie. joy). However
+#we will need to rerun the tagPOS() on the corresponding set of tweets. 
+joyfulTweets <- WendysSentiments$text[WendysSentiments$Emotion == "joy"]
+joyfulTags1to20 <- sapply(joyfulTweets[1:20], tagPOS)
+#...
+#joyfulTagsDF <- cbind(joyfulTags1to20, joyfulTags21to41)
+
+#pdf(file = "./Plots/joyfulPOSFreq.pdf")
+#posFreqPlot(joyfulTagsDF)
+#dev.off()
+
+#png(file = "./Plots/joyfulPOSFreq.png")
+#posFreqPlot(joyfulTagsDF)
+#dev.off()
+
+

@@ -25,13 +25,12 @@ McDtweets <- gsub("[[:digit:]]", "", McDtweets)
 McDtweets <- gsub("http\\w+", "", McDtweets)
 
 #get rid of emojis
-McDtweets <- sapply(McDtweets, function(row) iconv(row, "latin1", "ASCII", sub = ""))
+McDtweets <- sapply(McDtweets, function(line) iconv(line, "latin1", "ASCII", sub = ""))
 names(McDtweets) <- NULL
 McDtweets <- unique(McDtweets)
 
 
 #gets rid of extra spacing (Both leading and trailing white spaces)
-trimWhiteSpaces <- function (x) gsub("^\\s+|\\s+$", "", x)
 McDtweets <- trimWhiteSpaces(McDtweets)
 
 #Check for any NA instances
@@ -44,4 +43,6 @@ McDtweets <- unique(McDtweets)
 
 #Export data to a file in the CleanData directory.
 write(McDtweets, file = "./CleanData/CleanMcDTweets.txt")
+
+
 

@@ -18,10 +18,10 @@
 
 
 #Required packages that need to be installed and loaded
+require(ggplot2) #DO NOT LOAD THIS UNTIL YOU'RE DONE WITH TAGPOS()
 require(sentiment)
 require(openNLP)
 require(stringr)
-require(ggplot2)
 
 #First let's load a clean data file. I'm going to load the clean McDonald's
 #tweet text.
@@ -48,9 +48,15 @@ McDEmobestfit[is.na(McDEmobestfit)] <- "Unknown"
 
 #Now, let's take a look at the frequencies of the sentiments.
 McDemofreq <- table(McDEmobestfit)
-barplot(McDemofreq)
+pdf(file = "./Plots/emotionFreq.pdf")
+barplot(McDemofreq, main = "Frequencies of McDonald's Tweet Sentiments",
+        xlab = "Sentiment", ylab = "Frequency")
 dev.off()
-dev.new()
+
+png(file = "./Plots/emotionFreq.png", width = 480, height = 300)
+barplot(McDemofreq, main = "Frequencies of McDonald's Tweet Sentiments",
+        xlab = "Sentiment", ylab = "Frequency")
+dev.off()
 
 #We can also convert the columns with likelihoods into numeric
 McDNumdf <- data.frame(Anger = as.numeric(McDemotions[, 1]),
@@ -106,7 +112,6 @@ length(McDSentiments$Polarity[McDSentiments$Polarity == "negative"])
 #How many entries are classified with a neutral polarity?
 length(McDSentiments$Polarity[McDSentiments$Polarity == "neutral"])
 
-angryTweets <- McDSentiments$text[McDSentiments$Emotion == "anger"]
 fearTweets <- McDSentiments$text[McDSentiments$Emotion == "fear"]
 sadTweets <- McDSentiments$text[McDSentiments$Emotion == "sadness"]
 disgustTweets <- McDSentiments$text[McDSentiments$Emotion == "disgust"]
@@ -115,7 +120,11 @@ surprisedTweets <- McDSentiments$text[McDSentiments$Emotion == "surprise"]
 #WARNING: This tagPOS() commands are little sensitive and are prone to a
 #out of memory error. If you plan to tag many strings, you may need to break
 #the vector into smaller ones. Another thing you could do is to relieve the 
-#R environment by removing some values or unneeded data.
+#R environment by removing some values or unneeded data. Furthermore, 
+#tagPOS() will have the tendency to have a cannot coerce class error. 
+#The cause of this error is not straightforward I suggest either: restarting
+#R or your computer, refraining to load NLP package more than once in one 
+#session and don't load ggplot2 package until your done with using tagPOS()
 unknownTweets <- McDSentiments$text[McDSentiments$Emotion == "Unknown"]
 unknownTags1to30 <- sapply(unknownTweets[1:30], FUN = tagPOS)
 unknownTags31to60 <- sapply(unknownTweets[31:60], FUN = tagPOS)
@@ -123,7 +132,6 @@ unknownTags61to90 <- sapply(unknownTweets[61:90], FUN = tagPOS)
 unknownTags91to110 <- sapply(unknownTweets[91:110], FUN = tagPOS)
 unknownTags111to120 <- sapply(unknownTweets[111:120], FUN = tagPOS)
 unknownTags121to135 <- sapply(unknownTweets[121:135], FUN = tagPOS)
-
 
 #Now we will recombine all the unknown tweet's POS tags into one data frame.
 unknownTagsDF <- cbind(unknownTags1to30,
@@ -133,13 +141,20 @@ unknownTagsDF <- cbind(unknownTags1to30,
                        unknownTags111to120,
                        unknownTags121to135)
 
+#Since the tagPOS() is prone to such an error and in case you attempt to run
+#the blocks of code above and are unsuccessful, I have saved the output from
+#successful implementations in the "unknownTagsDF" file under the 
+#CleanData directory.
+
+write.table(unknownTagsDF, file = "./CleanData/unknownTagsDF.txt")
+
 #Now we can take a look at the frequencies of POS in tweets that are classified
 #with an emotion of "Unknown". We will also save the plot to a PDF and PNG file.
 pdf(file = "./Plots/unknownPOSFreq.pdf")
 posFreqPlot(unknownTagsDF)
 dev.off()
 
-png(file = "./Plots/unknownPOSFreq.png")
+png(file = "./Plots/unknownPOSFreq.png", width = 480, height = 300)
 posFreqPlot(unknownTagsDF)
 dev.off()
 
@@ -149,16 +164,71 @@ joyfulTweets <- McDSentiments$text[McDSentiments$Emotion == "joy"]
 joyfulTags1to20 <- sapply(joyfulTweets[1:20], tagPOS)
 joyfulTags21to41 <- sapply(joyfulTweets[21:41], tagPOS)
 joyfulTagsDF <- cbind(joyfulTags1to20, joyfulTags21to41)
+write.table(joyfulTagsDF, file = "./CleanData/joyfulTagsDF.txt")
+
+View(joyfulTagsDF)
 
 pdf(file = "./Plots/joyfulPOSFreq.pdf")
 posFreqPlot(joyfulTagsDF)
 dev.off()
 
-png(file = "./Plots/joyfulPOSFreq.png")
+png(file = "./Plots/joyfulPOSFreq.png", width = 480, height = 300)
 posFreqPlot(joyfulTagsDF)
 dev.off()
 
 #As one can tell, the dominant POS that is found seem to be nouns. You can take
 #a look to see what these POS codes signify by looking at this link:
 #http://cs.nyu.edu/grishman/jet/guide/PennPOS.html
+
+
+angryTweets <- McDSentiments$text[McDSentiments$Emotion == "anger"]
+angryTagsDF <- sapply(angryTweets, tagPOS)
+
+#Now, let's see if we can plot word frequencies, in order to do this, I want
+#to create a list of the files I have in a certain directory.
+McDCorpus <- Corpus(DirSource(dirname(path = "./CleanData/CleanMcDTweets.txt")))
+
+#I attempt to get rid of frequent words that are not of interest (ie. "and", "a")
+McDCorpus <- tm_map(McDCorpus, removeWords, stopwords("english"))  
+
+#Now I create a Document Term Matrix of part of the list I created earlier.
+#I use the first index only because that corresponds to the CleanMcDTweets.txt
+#file. 
+McDDtm <- DocumentTermMatrix(McDCorpus[1])
+#Next, I create a table of word frequencies
+freqDF <- colSums(as.matrix(McDDtm))
+#Let us take a look at the frequency table.
+head(freqDF)
+tail(freqDF)
+#As one can tell, the words are ordered in alphabetical order.
+#Next, we can attempt to remove sparse terms.
+McDDtm <- removeSparseTerms(McDDtm, 0.1)
+#Let us inspect the whole Document Term Matrix in full
+inspect(McDDtm)
+
+#Next we see the least and most frequent used terms.
+freqDF[head(order(freqDF))]
+freqDF[tail(order(freqDF))]
+
+#We can also get a frequency table of frequencies
+table(freqDF)
+
+#Let us reorganize the Matrix so that frequencies will be in decreasing order
+freqDF <- sort(colSums(as.matrix(McDDtm)), decreasing = TRUE)  
+
+#Now we can try to create a plot
+plotFreqDF <- data.frame(word = names(freqDF), frequency = freqDF)
+head(plotFreqDF)
+
+McDWordplot <- ggplot(subset(plotFreqDF, frequency > 5), aes(word, frequency))    
+McDWordplot <- McDWordplot + geom_bar(stat = "identity")   
+McDWordplot <- McDWordplot + theme(axis.text = 
+                                     element_text(angle = 40, hjust = 1))   
+pdf(file = "./Plots/McDWordFreqPlot.pdf")
+McDWordplot
+dev.off()
+
+png(file = "./Plots/McDWordFreqPlot.png")
+McDWordplot
+dev.off()
 
