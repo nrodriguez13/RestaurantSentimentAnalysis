@@ -1,6 +1,6 @@
 ---
 title: "STATS133 Final Project"
-author: "Nick Rodriguez, Navya Putta, and Anna Yea Jung"
+author: "Nick Rodriguez, Navya Putta, Anna Yea Jung and Bret Hart"
 date: "December 12, 2015"
 output: pdf_document
 ---
@@ -18,18 +18,16 @@ look at the tweets that people messaged to certain resturants' Twitter accounts.
 The restaurants we looked at were **In-n-Out Burger**, **McDonald's**, 
 **Ben & Jerry's** and **Wendy's**.
 
-Text data has always been a rich source of data, and we feel that all analysts
+Text has always been a rich source of data, and we feel that all analysts
 should become familiar with it if they are not already. So, this project was 
-fantastic practice to tackle text analysis and mining practices.
+fantastic practice to tackle text analysis and basics mining methods.
 
-In order to answer our question, we had to discover how to measure of people's
+In order to answer our question, we had to discover how to measure people's
 sentiments. The team ended up utilizing useful packages in order to perform the
 desired analyses.
 
 ##Data Extraction
-The data came from many sources that were essentially that was pipelined 
-through the **twitteR** package. We collected the tweets that were messaged to 
-a certain restaurant's Twitter account. 
+The data came from many sources that were essentially pipelined through the **twitteR** package. We collected the tweets that were messaged to a certain restaurant's Twitter account. 
 
 Here is an example query that we would send in a Twitter session in R:
 ```
@@ -38,10 +36,7 @@ Here is an example query that we would send in a Twitter session in R:
 
 However, to interact with Twitter, you'll need to go through the authentication
 process. There are directions to do this in the *DataAcquisition.R* file which
-can be found in the subdirectory, *DataAcquisition*, of the *RawData* directory.
-When it comes ot the actual queries that someone may wish to submit, we found
-the [Twitter Search API page](https://dev.twitter.com/rest/public/search) very 
-helpful in creating our own queries.
+can be found in the subdirectory, **DataAcquisition**, of the **RawData** directory. When it comes to the actual queries that someone may wish to submit, we found the [Twitter Search API page](https://dev.twitter.com/rest/public/search) very helpful in creating our own queries.
 
 ##A Side Note
 If you are interested in Twitter data, but would like to obtain it by other means then we suggest you do it through Python. UC Berkeley's D-Lab possesses a great
@@ -64,15 +59,23 @@ characters like *free*. There is also a problem of misspelled words and the anno
 
 ##Transforming the Data Further
 After the cleanup, we possessed vectors of character type data. We needed to 
-conduct sentiment analysis to actually answer our question. The package **sentiment** package provided us with the methods we needed to get this data.
-However, the **sentiment** package is no longer supported on CRAN, so you must 
-download the source code. Here are the commands in order to achieve this.
+conduct sentiment analysis to actually answer our question. The **sentiment** package provided us with the methods we needed to get this data. However, the **sentiment** package is no longer supported on CRAN, so you must download the source code. Here are the commands in order to achieve this.
 
 ```
 > install_url("http://cran.r-project.org/src/contrib/Archive/Rstem/Rstem_0.4-1.tar.gz")
 > install_url("http://cran.r-project.org/src/contrib/Archive/sentiment/sentiment_0.2.tar.gz")
 
 ```
+###A Quick Analysis Before We Go On
+If you avert your attention to the **WendysExploratory.Rmd** in the **Scripts**
+directory, at the top of the script, we took a look at the mobile devices that
+tweets were sent from. A cool fact we found out, that actually shouldn't be 
+of too much surprise, is that most devices used are iPhones. Follow up on the
+**Wendy's** related scripts for further details. Here is a nice plot that shows
+this. Again, this is only for **Wendy's** tweets.
+
+![Wendy Source Freq Plot](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/WendysSourcePlot.png)
+
 ###Classifying Tweets By Emotion
 In order to classify tweets under a certain sentiment, we used the 
 *classify_emotion()* function. The function essentially uses a naive Bayes
@@ -168,14 +171,8 @@ environment of unneeded values and data (2) segment the character vector in to
 smaller chunks like in this example below.
 
 **WARNING**: We had another issue with the *tagPOS()* function, where we it 
-run into a *cannot coerce into data frame* error. There are some actions that 
-may have brought about this error. I suggest you only load following packages and
-only once in one R session: **sentiment**, **openNLP**, and **stringr**. The
-packages were also loaded in that order. Keep in mind that **sentiment** also 
-loads the **NLP** packages which will be needed. You may want to try loading the
-**ggplot2** package before you load the three previously mentioned packages. If
-**ggplot2** is loaded after, the "annotate" object is masked from **NLP** which
-may be the source of the problem.
+would fall prey to  a *cannot coerce into data frame* error. There are some actions that may have brought about this error. I suggest you only load the following packages and only once in one R session: **sentiment**, **openNLP**, 
+and **stringr**. The packages were also loaded in that order. Keep in mind that **sentiment** also loads the **NLP** packages which will be needed. You may want to try loading the **ggplot2** package before you load the three previously mentioned packages. If **ggplot2** is loaded after, the "annotate" object is masked from **NLP** which may be the source of the problem.
 
 However, if successfully implemented, *tagPOS()* will create a data frame with
 two rows and the number of columns depends on the length of your character 
@@ -194,9 +191,7 @@ function is actually the data frame that we would receive from *tagPOS()*.
 ```
 ![Frequency Table of Unknown Tweet's POS](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/joyfulPOSFreq.png)
 
-The plot above is example output of *posFreqPlot()* that is plots POS frequencies
-for **Unknown** emotion-classified tweets. One can look at what the POS codes 
-signify by going to this [link](http://cs.nyu.edu/grishman/jet/guide/PennPOS.html).
+If you're interested, you can look at what the POS codes signify by going to this [link](http://cs.nyu.edu/grishman/jet/guide/PennPOS.html).
 
 ###Taking a Closer Look at the Words
 Other analyses we dove into were to plot frequencies of actual words. The process
@@ -205,16 +200,14 @@ was inspired by [Basics of Text Mining from RStudio](https://rstudio-pubs-static
 **Note**: the **sentiment** package already loads the **tm** package for you.
 
 ```
-#Now, let's see if we can plot word frequencies, in order to do this, I want
-#to create a list of the files I have in a certain directory.
+#In order to do this, I want to create a list of the files I have in a certain #directory. Of course, we want a path to our CleanData directory.
 > McDCorpus <- Corpus(DirSource(dirname(path = "./CleanData/CleanMcDTweets.txt")))
 
 #I attempt to get rid of frequent words that are not of interest (ie. "and", "a")
 > McDCorpus <- tm_map(McDCorpus, removeWords, stopwords("english"))  
 
-#Now I create a Document Term Matrix of part of the list I created earlier.
-#I use the first index only because that corresponds to the 
-#CleanMcDTweets.txt file. 
+#Now I create a Document Term Matrix of only part of the list I created earlier.
+#I use the first index only because that corresponds to the CleanMcDTweets.txt #file. 
 > McDDtm <- DocumentTermMatrix(McDCorpus[1])
 
 #Next, I create a table of word frequencies
@@ -229,7 +222,7 @@ mcdonalds      just       one       amp     fries       can
                 youngest yourcommericalsfoolnoone                    youve 
                        1                        1                        1 
 
-#The least frequent words
+#Here are the least frequent words
 > freqDF[head(order(freqDF))]
  accents accident     ache      act  address     addy 
        1        1        1        1        1        1 
@@ -257,7 +250,7 @@ amp             amp        13
 fries         fries        13
 can             can        12
 
-> McDWordplot <- ggplot(subset(plotFreqDF, frequency > 5), aes(word, frequency))   
+> McDWordplot <- ggplot(subset(plotFreqDF, frequency > 5), aes(word, frequency))
 > McDWordplot <- McDWordplot + geom_bar(stat = "identity")   
 > McDWordplot <- McDWordplot + theme(axis.text = 
                                      element_text(angle = 40, hjust = 1))   
@@ -278,20 +271,32 @@ word clouds of **In-n-Out Burger** and **Ben & Jerry's**, respectively.
 In case you are unfamiliar with word clouds, the idea is that the larger a text is then the more frequent it was in some larger body of text. If we take a look at 
 the word cloud for **In-n-Out Burger**, we notice some interesting words in 
 some of the sentiment groupings. For example, in the *joy* sentiment we can see
-that the word *mcdonalds* was mentioned. This can perhaps signify some tweeters' preferences for McDonald's over In-n-Out. Perhaps tweeters are actually comparign the two in favor of In-n-Out. These visualizations only scratch the surface for answering our question. However, we are gaining a good sense of what people are talking about when tweeting about these restaurants.
+that the word *mcdonalds* was mentioned. This can perhaps signify some tweeters' preferences for McDonald's over In-n-Out. Perhaps tweeters are actually comparing the two in favor of In-n-Out. These visualizations only scratch the surface for answering our question. However, we are gaining a good sense of what people are talking about when tweeting about these restaurants.
 
 ##Conclusions
 To answer our question of what are people's sentiments of these restaurants (as
 reflected in tweets) seems to show the same trend as we evaluate our data and
 plots. There seems to be a huge amount of tweets that are classified as *Unknown*,
-but *joy* tweets are the second largest population. As for polarity, the amount *positive* tweets triumph over *negative* and *neutral*. These two trends were
+but *joy* tweets are the second largest population. As for polarity, the amount of *positive* tweets triumph over *negative* and *neutral*. These two trends were
 reflected in our data. Here are some other plots that show this behavior. 
 
 ![In-n-Out emotion freqs](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/innoutEmoFreq.png)
 
 ![In-n-Out emotion freqs](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/innoutPolarity.png)
 
+An explanation for this conclusion could be that people do not generally tweet sentimental postings about restaurants. Another possibility is to blame the Bayes classifier. It will take much more research to study the latter possibility. Next major steps would be to work more with the quantitative data, so perhaps plot change of log likelihoods across restaurants. Overall, we can perhaps argue that
+people generally tweet positive things about fast food establishments because
+perhaps people look forward to eating. Furthermore, they may be either thinking
+of its food, at the restaurant or on the way to visiting a restaurant.
 
-An explanation for this conclusion could be that people generally tweet not very sentimental postings about restaurants. Another possibility is to blame the Bayes classifier. It will take much more research to study the latter possibility. Next major steps would be to work more with the quantitative data, so perhaps plot change of log likelihoods across restaurants.
+**We would like cite the following sources:**
+
+[Twitter Search API](https://dev.twitter.com/rest/public/search)
+
+[Regular Expressions Cheat Sheet](http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/)
+
+[Sentiment for Consumer Analysis](http://colinpriest.com/2015/07/04/tutorial-using-r-and-twitter-to-analyse-consumer-sentiment/)
+
+[Basics of Text Mining](https://rstudio-pubs-static.s3.amazonaws.com/31867_8236987cf0a8444e962ccd2aec46d9c3.html)
 
 

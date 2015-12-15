@@ -168,6 +168,7 @@ write.table(joyfulTagsDF, file = "./CleanData/joyfulTagsDF.txt")
 
 View(joyfulTagsDF)
 
+posFreqPlot(joyfulTagsDF)
 pdf(file = "./Plots/joyfulPOSFreq.pdf")
 posFreqPlot(joyfulTagsDF)
 dev.off()

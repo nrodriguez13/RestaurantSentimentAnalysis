@@ -1,0 +1,43 @@
+---
+title: "Wendys Exp"
+---
+
+What devices are these tweets coming from? We can use the "sourcestatus" column to see the original device used to make each tweet. 
+
+```{r}
+wendys_DF <- read.table(file = "./RawData/WendysTweets.txt", 
+                    header = FALSE, fill = TRUE)
+
+sort(table(wendys_DF$V12), decreasing = TRUE)
+
+iphone <- length(grep("iphone",wendys_DF$V12, ignore.case = TRUE))
+android <- length(grep("android",wendys_DF$V12, ignore.case = TRUE))
+webtwit <- length(grep("twitter web",wendys_DF$V12, ignore.case = TRUE))
+ipad <- length(grep("ipad",wendys_DF$V12, ignore.case = TRUE))
+```
+
+Only 3 sources take up the vast majority of tweet origination, with iPhone possessing the most tweets by a landslide. Android is in a distant second. Mobile devices clearly originate the vast majority of tweets, with the Twitter Web Client in a far 3rd. The iPad is the only other source with more than 10 devices out of 1000 original tweets.
+
+```{r}
+barplot(c(iphone,
+       android,
+       webtwit,
+       ipad,
+       length(wendys_DF$V12) - 1 - iphone - android - webtwit - ipad), 
+       names.arg =  c("iPhone",
+                      "Android",
+                      "Web Client",
+                      "iPad",
+                      "Other"),
+       col = c('#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900'),
+       xlab = "Tweet Original Source", ylab = "Frequency", 
+       main = "Frequencies of Different Tweet Sources")
+
+pdf(file = "./Plots/WendysSourcePlot.pdf")
+#run above plot
+dev.off()
+
+png(file = "./Plots/WendysSourcePlot.png")
+#run above plot
+dev.off()
+```
