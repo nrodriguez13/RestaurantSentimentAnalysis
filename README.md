@@ -66,9 +66,8 @@ The *Report* directory holds documents that contain our write up of the
 project. There is a PDF version included that shows the final version that
 was ultimately submitted.
 
-###Some Useful Links
+###We Would Like to Cite the Following:
 
-I found these resources very helpful.
   - [Twitter Search API](https://dev.twitter.com/rest/public/search)
   - [Regular Expressions Cheat Sheet](http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/)
   - [Sentiment for Consumer Analysis](http://colinpriest.com/2015/07/04/tutorial-using-r-and-twitter-to-analyse-consumer-sentiment/)

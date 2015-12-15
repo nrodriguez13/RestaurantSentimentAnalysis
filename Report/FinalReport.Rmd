@@ -38,12 +38,6 @@ However, to interact with Twitter, you'll need to go through the authentication
 process. There are directions to do this in the *DataAcquisition.R* file which
 can be found in the subdirectory, **DataAcquisition**, of the **RawData** directory. When it comes to the actual queries that someone may wish to submit, we found the [Twitter Search API page](https://dev.twitter.com/rest/public/search) very helpful in creating our own queries.
 
-##A Side Note
-If you are interested in Twitter data, but would like to obtain it by other means then we suggest you do it through Python. UC Berkeley's D-Lab possesses a great
-walkthrough on how to interact with the Twitter API in Python. However, either
-method you choose, you will need to set up a Twitter Developer's account.
-
-
 ##Cleaning the Raw Data
 Our data came in the form of character vectors. With that being said, we worked 
 closely with the regular expressions in order to clean the tweets. We had to remove
@@ -118,10 +112,6 @@ is classified in that sentiment.
 ```
 ![Frequencies of Sentiments in McDonald Tweets](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/emotionFreq.png)
 
-We also took a closer look at all frequency of sentiments for a given restaruant's
-set of tweets. The plot above depicts the barplot of sentiment frequencies for
-McDonald's. 
-
 ###Classifying Tweets by Polarity
 The **sentiments** package also provided us with a *classify_polarity()* function
 that will categorize a string as **positive**, **negative** or **neutral**. The
@@ -160,7 +150,7 @@ and the corresponding text, we could ask some basic questions.
 
 ###More Exploratory Data Analysis
 Next, we wanted to be able to label words of a tweet with its corresponding
-parts of speech (POS). So installed and loaded the **openNLP** package and 
+parts of speech (POS). So we installed and loaded the **openNLP** package and 
 cite the [tagPOS function](http://stackoverflow.com/questions/28764056/could-not-find-function-tagpos). We had to search for this function because it might not
 have been a built-in function of the natural language processing packages.
 
@@ -205,11 +195,9 @@ was inspired by [Basics of Text Mining from RStudio](https://rstudio-pubs-static
 
 #I attempt to get rid of frequent words that are not of interest (ie. "and", "a")
 > McDCorpus <- tm_map(McDCorpus, removeWords, stopwords("english"))  
-
 #Now I create a Document Term Matrix of only part of the list I created earlier.
 #I use the first index only because that corresponds to the CleanMcDTweets.txt #file. 
 > McDDtm <- DocumentTermMatrix(McDCorpus[1])
-
 #Next, I create a table of word frequencies
 > freqDF <- colSums(as.matrix(McDDtm))
 > head(freqDF)
@@ -258,7 +246,6 @@ can             can        12
 ```
 ![Word Frequencies in McDonald's Tweets](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/McDWordFreqPlot.png)
 
-
 ##Visualizations
 Another exciting part of the report was to attempt creating word clouds. The aim
 was to separate words by sentiments and plot them in groups. As a result, we 
@@ -266,12 +253,12 @@ have a nice overview of the words and are able to compare. Below you will find
 word clouds of **In-n-Out Burger** and **Ben & Jerry's**, respectively.
 
 ![Word Cloud of In-n-Out Tweets](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/innOutWordCloud.png) 
-![Word Cloud of Ben & Jerry Tweets](/Users/Nick13/Documents/STATS133/RestaurantSentimentAnalysis/Plots/wordcloudBJ.png)
 
 In case you are unfamiliar with word clouds, the idea is that the larger a text is then the more frequent it was in some larger body of text. If we take a look at 
 the word cloud for **In-n-Out Burger**, we notice some interesting words in 
 some of the sentiment groupings. For example, in the *joy* sentiment we can see
-that the word *mcdonalds* was mentioned. This can perhaps signify some tweeters' preferences for McDonald's over In-n-Out. Perhaps tweeters are actually comparing the two in favor of In-n-Out. These visualizations only scratch the surface for answering our question. However, we are gaining a good sense of what people are talking about when tweeting about these restaurants.
+that the word *mcdonalds* was mentioned. This can perhaps signify some tweeters' preferences for McDonald's over In-n-Out. Perhaps tweeters are actually comparing the two in favor of In-n-Out. These visualizations only scratch the surface for answering our question. However, we are gaining a good sense of what people are talking about when tweeting about these restaurants. There is also a word cloud
+for **Ben & Jerry's** available that showed some interesting groupings.
 
 ##Conclusions
 To answer our question of what are people's sentiments of these restaurants (as
@@ -288,15 +275,3 @@ An explanation for this conclusion could be that people do not generally tweet s
 people generally tweet positive things about fast food establishments because
 perhaps people look forward to eating. Furthermore, they may be either thinking
 of its food, at the restaurant or on the way to visiting a restaurant.
-
-**We would like cite the following sources:**
-
-[Twitter Search API](https://dev.twitter.com/rest/public/search)
-
-[Regular Expressions Cheat Sheet](http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/)
-
-[Sentiment for Consumer Analysis](http://colinpriest.com/2015/07/04/tutorial-using-r-and-twitter-to-analyse-consumer-sentiment/)
-
-[Basics of Text Mining](https://rstudio-pubs-static.s3.amazonaws.com/31867_8236987cf0a8444e962ccd2aec46d9c3.html)
-
-
